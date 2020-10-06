@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action="" id="form">
+      <input type="text" name="username" />
+      <input type="text" name="age" />
+      <input type="button" id="submit" value="提交" />
+    </form>
+    <script>
+      submit.onclick = function () {
+        let form = document.getElementById("form");
+        //   利用FormData构造函数创建一个表单对象
+        let formdata = new FormData(form);
+        let xhr = new XMLHttpRequest();
+        xhr.open("post", "http://localhost:3000/formdata");
+        xhr.send(formdata);
+        xhr.onload = function () {
+          if (xhr.status == 200) {
+            console.log(xhr.responseText);
+          }
+        };
+      };
+    </script>
+  </body>
+</html>

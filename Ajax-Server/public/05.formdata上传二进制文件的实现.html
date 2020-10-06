@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box {
+        width: 800px;
+        height: 20px;
+        border: 1px solid black;
+        margin: 10px;
+      }
+      .progress {
+        height: 100%;
+        width: 0%;
+        background-color: orange;
+        transition: all 3s;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="file" id="file" />
+    <div class="box">
+      <div class="progress" id="insideBox"></div>
+      <div id="picture"></div>
+    </div>
+    <script>
+      file.onchange = function () {
+        let formdata = new FormData();
+        formdata.append("uploadFile", file.files[0]);
+        let xhr = new XMLHttpRequest();
+        xhr.open("post", "http://localhost:3000/upload");
+        // upload对象中保存了跟上传文件相关的一些事件，在文件上传时会不断的触发onprogress事件
+        xhr.upload.onprogress = function (ev) {
+          console.log(ev);
+          // ev事件对象中存储了上传文件的总大小ev.total，以及已经上传部分的大小ev.loaded
+          insideBox.style.width = (ev.loaded / ev.total) * 100 + "%";
+          insideBox.innerHTML = (ev.loaded / ev.total) * 100 + "%";
+        };
+        // 注意：onprogress监听事件必须放在send发送数据之前，否则监听不到数据的发送
+        xhr.send(formdata);
+        xhr.onload = function () {
+          if (xhr.status == 200) {
+            // console.log(xhr.responseText);
+            let result = JSON.parse(xhr.responseText);
+            // 返回的路径为服务器的绝对路径，实际需要的是从public后面的内容
+            let path = result.path.split("public")[1];
+            let img = document.createElement("img");
+            img.src = path;
+            // 当图片加载完后再插入到dom中
+            img.onload = function () {
+              picture.appendChild(img);
+            };
+          }
+        };
+      };
+    </script>
+  </body>
+</html>

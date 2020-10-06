@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- <form action="http://localhost:3000/first" method="get">
+      <label for="username" class="col-sm-2">用户名</label>
+      <input id="username" type="text" name="username" />
+      <label for="pwd">密码</label>
+      <input type="password" id="pwd" name="pwd" />
+      <input type="submit" value="登录" />
+    </form> -->
+    <p>
+      <label for="username">用户名</label>
+      <input type="text" id="username" name="username" />
+    </p>
+    <p>
+      <label for="pwd">密码</label>
+      <input type="password" id="pwd" name="pwd" />
+    </p>
+    <p>
+      <input type="button" value="发送get请求" id="submit" />
+      <input type="button" value="发送post请求" id="submitPost" />
+      <input type="button" value="发送json格式的post请求" id="submitPostJson" />
+      <input type="button" value="错误处理" id="error" />
+    </p>
+    <script>
+      submit.onclick = function () {
+        let url = `http://localhost:3000/first?username=${username.value}&pwd=${pwd.value}`;
+        let xhr = new XMLHttpRequest();
+        xhr.open("get", url);
+        xhr.send();
+        xhr.onload = function () {
+          console.log(xhr.responseText);
+        };
+      };
+      submitPost.onclick = function () {
+        let xhr = new XMLHttpRequest();
+        xhr.open("post", "http://localhost:3000/first");
+        xhr.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+        let params = `username=${username.value}&pwd=${pwd.value}`;
+        xhr.send(params);
+        xhr.onload = function () {
+          console.log(xhr.responseText);
+        };
+      };
+      submitPostJson.onclick = function () {
+        let xhr = new XMLHttpRequest();
+        console.log(xhr.readyState); //0
+        xhr.open("post", "http://localhost:3000/json");
+        console.log(xhr.readyState); //1
+
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        // 当Ajax状态码发生变化时将自动触发该事件
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4) {
+            console.log(xhr.responseText);
+          }
+        };
+
+        xhr.send(JSON.stringify({ username: username.value, pwd: pwd.value }));
+        console.log(xhr.readyState);
+        // xhr.onload = function () {
+        //   console.log(xhr.responseText);
+        // };
+      };
+      error.onclick = function () {
+        let xhr = new XMLHttpRequest();
+        xhr.open("get", "http://localhost:3000/error");
+        xhr.send();
+        xhr.onload = function () {
+          if (xhr.status != 200) {
+            console.log("非预期结果");
+          }
+          if (xhr.status == 404) {
+            console.log("请求路径有问题");
+          }
+          if (xhr.status == 500) {
+            console.log("服务器错误");
+          }
+        };
+        xhr.onerror = function () {
+          console.log("网络出错");
+        };
+      };
+    </script>
+  </body>
+</html>

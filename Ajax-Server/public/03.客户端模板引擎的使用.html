@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.staticfile.org/art-template/4.10.0/lib/template-web.min.js"></script>
+  </head>
+  <body>
+    <!-- art-teplate模板 -->
+    <script type="text/html" id="tep">
+      <h1>{{name}}</h1>
+      <h2>{{age}}</h2>
+    </script>
+    <script>
+      // 将数据和模板进行拼接，返回值为拼接好的html字符串
+      let html = template("tep", { name: "liu", age: 21 });
+      document.body.innerHTML = html;
+    </script>
+  </body>
+</html>

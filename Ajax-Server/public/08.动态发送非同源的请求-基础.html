@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="button">点击发送非同源的请求</button>
+    <script>
+      function fn(data) {
+        console.log(data);
+      }
+    </script>
+    <script>
+      button.onclick = function () {
+        let script = document.createElement("script");
+        script.src = "http://localhost:3001/jsonpBasic";
+        document.body.appendChild(script);
+        script.onload = function () {
+          document.body.removeChild(script);
+        };
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="button">点击发送非同源的请求</button>
+    <!-- 1.在全局作用域下定义函数fn，当加载完后面的script标签后，相当于调用了这个fn函数，所以fn函数里的data就变成了我们想要获取的数据。 -->
+    <script>
+      //   function fn3(data) {
+      //     console.log(data);
+      //   }
+      button.onclick = function () {
+        jsonp({
+          url: "http://localhost:3001/jsonp",
+          data: {
+            name: "zhangsan",
+            age: 20,
+            gender: "male",
+          },
+          success: function (data) {
+            console.log(data);
+          },
+        });
+      };
+      //   4.封装jsonp函数，跟封装ajax类似
+      function jsonp(options) {
+        let script = document.createElement("script");
+
+        let params = "";
+        for (key in options.data) {
+          params += `&${key}=${options.data[key]}`;
+        }
+        // 5.将传递过来的函数挂载在window对象上，使其成为全局函数，便于加载script标签的时候直接执行这个函数。
+        // 这里存在一个问题：后发送的请求中挂载的fn2函数会覆盖前面的fn2函数。解决方法是将这个函数的名字设置一个随机数。
+        //0.1524 注意:函数名不能为纯数字
+        let functionName =
+          "myJsonp" + Math.random().toString().replace(".", "");
+        // window.fn2 = options.success;
+        window[functionName] = options.success;
+        // 3.在请求路径中添加所使用的函数的名称，解决需要前后端需要商量函数名的问题
+        // script.src = options.url + "?callback=fn3";
+        script.src = `${options.url}?callback=${functionName}${params}`;
+        document.body.appendChild(script);
+        // 2.存在一个问题：每次点击发送都会为dom添加一个script标签。
+        // 解决方案：在每次加载完script标签后，将其从html中删除
+        script.onload = function () {
+          document.body.removeChild(script);
+        };
+      }
+    </script>
+  </body>
+</html>
